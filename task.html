@@ -1,0 +1,135 @@
+<?php
+// Simple standalone file
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daily Report Generator</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f8ff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 700px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #1e90ff;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            margin-bottom: 15px;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background: #1e90ff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            background: #0f75d6;
+        }
+
+        .output {
+            height: 260px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Daily Report Generator</h2>
+
+    <label><b>Today's Tasks Completed</b></label>
+    <textarea id="todayTasks" placeholder="Enter today's completed tasks (one per line)"></textarea>
+
+    <label><b>Tomorrow's Work Flow</b></label>
+    <textarea id="tomorrowTasks" placeholder="Enter tomorrow's workflow (one per line)"></textarea>
+
+    <button onclick="generateEmail()">Generate Email</button>
+    <button onclick="copyEmail()">Copy</button>
+<button onclick="openOutlook()">Open in Outlook</button>
+
+    <br><br>
+
+    <label><b>Generated Email</b></label>
+    <textarea id="output" class="output" placeholder="Generated email will appear here"></textarea>
+</div>
+
+<script>
+function generateEmail() {
+
+    let todayInput = document.getElementById("todayTasks").value.trim().split("\n");
+    let tomorrowInput = document.getElementById("tomorrowTasks").value.trim().split("\n");
+
+    let date = new Date().toLocaleDateString("en-GB");
+
+    let todayFormatted = todayInput
+        .filter(task => task.trim() !== "")
+        .map(task => "- " + task.trim())
+        .join("\n");
+
+    let tomorrowFormatted = tomorrowInput
+        .filter(task => task.trim() !== "")
+        .map(task => "- " + task.trim())
+        .join("\n");
+
+    // ✅ SUBJECT REMOVED FROM BODY
+    let email = `Hi Sir,
+
+Today's Tasks Completed (${date}):
+${todayFormatted}
+
+Tomorrow's Work Flow:
+${tomorrowFormatted}
+
+`;
+
+    document.getElementById("output").value = email;
+}
+
+
+function copyEmail() {
+    let output = document.getElementById("output");
+    output.select();
+    document.execCommand("copy");
+    alert("Email copied successfully!");
+}
+function openOutlook() {
+
+    let content = document.getElementById("output").value;
+
+    let subject = "Daily Work Report – " + new Date().toLocaleDateString("en-GB");
+    let body = encodeURIComponent(content);
+
+    window.location.href = `mailto:balaraman@nativer.in?subject=${encodeURIComponent(subject)}&body=${body}`;
+}
+
+</script>
+
+</body>
+</html>
